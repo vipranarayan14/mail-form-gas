@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Contact Form using Google App Scripts</title>
+
+  <style>
+    input,
+    textarea {
+      display: block;
+    }
+  </style>
+
+<script
+  src="https://code.jquery.com/jquery-3.3.1.js"
+  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+  crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <!-- https://script.google.com/macros/s/AKfycbxCbx5D7j9hFxmdX0u-Ak_X5MuYlbuoEOqAOAnToCWJMePXEs0/exec -->
+  <!-- https://script.google.com/macros/s/AKfycbxg3R3UVN7mXNMS4Gkr8Fs_8EoUZffhx4EyLqAW_IE/dev -->
+
+  <form id="contact-form" name="contact-form">
+
+    <input class="input-text" type="text" placeholder="Name" name="fullname" aria-label="Full Name" autocomplete="name" required
+      value="test name">
+
+    <input class="input-text" type="email" placeholder="Email" name="email" aria-label="Email" autocomplete="email" required
+      value="test@email.com">
+
+    <textarea class="input-text" placeholder="Message" maxlength="300" name="message" aria-label="Message" required>test message</textarea>
+
+
+    <input id="form-submit" type="submit" value="Submit" aria-label="Submit Message">
+
+  </form>
+
+  <!-- <script>
+    const data = {
+      'a': 'q',
+      'b': 'c'
+    };
+
+    const submitForm = event => {
+
+      event.preventDefault();
+
+      postForm(event.target.action);
+    };
+
+    const postForm = url => {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.open('POST', url);
+      xhr.withCredentials = true;
+
+      xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+      xhr.onreadystatechange = function () {
+
+        // document.querySelector('#contact-form').style.display = 'none'; // hide form
+
+        return;
+
+      };
+
+      // url encode form data for sending as post data
+      var encoded = Object.keys(data).map(function (k) {
+
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k])
+
+      }).join('&');
+
+      console.log(encoded);
+
+      xhr.send(encoded);
+
+    };
+
+    document.querySelector('#contact-form').addEventListener('submit', submitForm, false);
+  </script> -->
+
+  <!-- <script>
+    var createCORSRequest = function (method, url) {
+      var xhr = new XMLHttpRequest();
+      if ("withCredentials" in xhr) {
+        // Most browsers.
+        xhr.open(method, url, true);
+      } else if (typeof XDomainRequest != "undefined") {
+        // IE8 & IE9
+        xhr = new XDomainRequest();
+        xhr.open(method, url);
+      } else {
+        // CORS not supported.
+        xhr = null;
+      }
+      return xhr;
+    };
+
+    var url = 'https://script.google.com/macros/s/AKfycbxg3R3UVN7mXNMS4Gkr8Fs_8EoUZffhx4EyLqAW_IE/dev';
+    var method = 'POST';
+    var xhr = createCORSRequest(method, url);
+
+    xhr.onload = function () {
+      // Success code goes here.
+    };
+
+    xhr.onerror = function () {
+      // Error code goes here.
+    };
+
+
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.send('e=r&c=t');
+  </script> -->
+
+  <script>
+  
+    // Make an AJAX call to Google Script
+    function callGoogleScript() {
+      
+      var url = "https://script.google.com/macros/s/AKfycbxg3R3UVN7mXNMS4Gkr8Fs_8EoUZffhx4EyLqAW_IE/dev?callback=ctrlq&name=";
+      var name = "Amit Agarwal"
+  
+      var request = jQuery.ajax({
+        crossDomain: true,
+        url: url + encodeURIComponent(name),
+        method: "GET",
+        dataType: "jsonp"
+      });
+  
+    }
+  
+    // print the returned data
+    function ctrlq(e) {
+      console.log(e.result)
+    }
+
+    callGoogleScript();
+  </script>
+</body>
+
+</html>
