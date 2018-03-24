@@ -142,6 +142,8 @@ const handleFormSubmit = (form, config) => event => {
 
   }
 
+  data.origin = location.origin;
+
   data.mailSubject = config.mailOptions.subject;
 
   const mailBody = generateMailBody(config.mailOptions.body, data);
