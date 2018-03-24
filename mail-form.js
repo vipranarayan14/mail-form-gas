@@ -15,13 +15,13 @@ const parseTemplate = (template, map, fallback) => {
 
 };
 
-const encodePostData = (data, honeypot) => Object.keys(data).map(field => {
+const encodePostData = (data, config) => Object.keys(data).map(field => {
 
-  if (field === honeypot) {
+  if (field === config.honeypot) {
 
     return;
 
-  }
+  };
 
   return encodeURIComponent(field) + "=" + encodeURIComponent(data[field]);
 
@@ -107,9 +107,9 @@ const getFormData = form => {
 
 const isHuman = honeypot => honeypot ? false : true;
 
-const sendPost = (url, encoded, cb = () => {}) => {
+const sendPost = (encoded, onPost, config) => {
 
-  const decodedUrl = decodeUrl(url);
+  const decodedUrl = decodeUrl(config.action);
 
   const xhr = new XMLHttpRequest();
 
@@ -121,7 +121,7 @@ const sendPost = (url, encoded, cb = () => {}) => {
 
     if (this.readyState == 4 && this.status == 200) {
 
-      return cb(xhr);
+      return onPost(xhr);
 
     }
 
@@ -130,37 +130,37 @@ const sendPost = (url, encoded, cb = () => {}) => {
   xhr.send(encoded);
 };
 
-const handleFormSubmit = (...[form, url, honeypot, template, cb]) => event => {
+const handleFormSubmit = (form, config) => event => {
 
   event.preventDefault();
 
   const data = getFormData(form); // get the values submitted in the form
 
-  if (!isHuman(data[honeypot])) { //if honeypot is filled, form will not be submitted
+  if (!isHuman(data[config.honeypot])) { //if honeypot is filled, form will not be submitted
 
     return;
 
   }
-  
-  data.mailSubject = template.subject;
 
-  const mailBody = generateMailBody(template.body, data);
+  data.mailSubject = config.mailOptions.subject;
+
+  const mailBody = generateMailBody(config.mailOptions.body, data);
 
   data.mailBody = mailBody;
-  
-  // url encode form data for sending as post data
-  const encoded = encodePostData(data, honeypot);
 
-  sendPost(url, encoded, cb);
+  // url encode form data for sending as post data
+  const encodedPostData = encodePostData(data, config);
+
+  sendPost(encodedPostData, config.onPost, config);
 };
 
-const initMailForm = (formSelector, ...args) => {
+const initMailForm = (config) => {
 
-  const contactForm = document.querySelector(formSelector);
+  const contactForm = document.querySelector(config.formSelector);
 
   contactForm.addEventListener(
     "submit",
-    handleFormSubmit(contactForm, ...args),
+    handleFormSubmit(contactForm, config),
     false
   );
 
