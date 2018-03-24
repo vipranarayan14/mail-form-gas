@@ -33,13 +33,18 @@
 
   </form>
 
-  <script data-cfasync="false" type="text/javascript" src="form-submission-handler.js"></script>
+  <script data-cfasync="false" type="text/javascript" src="mail-form.js"></script>
 
   <script>
     initMailForm(
       '#contact-form',
       'YUhSMGNITTZMeTl6WTNKcGNIUXVaMjl2WjJ4bExtTnZiUzl0WVdOeWIzTXZjeTlCUzJaNVkySjRRMko0TlVRM2FqbG9Sbmh0WkZnd2RTMUJhMTlZTlUxMVdXeGlkVzlGVDNGQlQwRnVWRzlEVjBwTlpWQllSWE13TDJWNFpXTT0=',
       'surname',
+
+      {
+        subject: 'TKS Website: Contact Form Submitted',
+        body: '<h1>Mi nami os $[fullname]!<h1>'
+      },
       xhr => {
         console.log('responseText:', xhr.responseText);
       },

@@ -1,8 +1,23 @@
 'use strict';
 
-const encodePostData = data => Object.keys(data).map(field => {
+const getValueForPath = (path, obj, fb = `$[${path}]`) =>
+  path.split('.').reduce((res, key) => res[key] || fb, obj);
 
-  if (field === 'honeypot') {
+const parseTemplate = (template, map, fallback) => {
+
+  return template.replace(/\$\[.+?\]/g, (match) => {
+
+    const path = match.substr(2, match.length - 3).trim();
+
+    return getValueForPath(path, map, fallback);
+
+  });
+
+};
+
+const encodePostData = (data, honeypot) => Object.keys(data).map(field => {
+
+  if (field === honeypot) {
 
     return;
 
@@ -52,6 +67,8 @@ const generateData = (elements, fields) => {
   return data;
 
 };
+
+const generateMailBody = (template, data) => btoa(JSON.stringify(parseTemplate(template, data)));
 
 const getFields = elements => Object.keys(elements).map(item => {
 
@@ -113,7 +130,7 @@ const sendPost = (url, encoded, cb = () => {}) => {
   xhr.send(encoded);
 };
 
-const handleFormSubmit = (...[form, url, honeypot, cb]) => event => {
+const handleFormSubmit = (...[form, url, honeypot, template, cb]) => event => {
 
   event.preventDefault();
 
@@ -124,9 +141,15 @@ const handleFormSubmit = (...[form, url, honeypot, cb]) => event => {
     return;
 
   }
+  
+  data.mailSubject = template.subject;
 
+  const mailBody = generateMailBody(template.body, data);
+
+  data.mailBody = mailBody;
+  
   // url encode form data for sending as post data
-  const encoded = encodePostData(data);
+  const encoded = encodePostData(data, honeypot);
 
   sendPost(url, encoded, cb);
 };
