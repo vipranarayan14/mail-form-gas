@@ -42,10 +42,11 @@
       honeypot: 'surname',
       mailOptions: {
         subject: 'TKS Website: Contact Form Submitted',
-        body: '<h1>Mi nami os $[fullname]!<h1>'
+        body: '<h2>$[fullname] has contacted you!</h2>' +
+          '<b>Message:</b> <br> <p>$[message]</p>'
       },
       onPost: xhr => {
-        console.log('responseText:', xhr.responseText);
+        console.log('responseText:', JSON.parse(xhr.responseText));
       },
     });
   </script>
